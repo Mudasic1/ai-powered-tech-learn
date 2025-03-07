@@ -217,30 +217,32 @@ with st.sidebar:
         st.rerun()
 
 # Display chat history
-for message in st.session_state.messages:
+for i, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         
         # Add feedback buttons for assistant messages
         if message["role"] == "assistant" and "feedback" not in message:
             cols = st.columns([1, 1, 4])
-            message_index = st.session_state.messages.index(message)
+            
+            # Use the enumerated index i as a unique identifier
+            # This is guaranteed to be unique for each message in the current rendering
             
             # Thumbs up button
-            if cols[0].button("👍", key=f"thumbs_up_{message_index}"):
+            if cols[0].button("👍", key=f"thumbs_up_{i}"):
                 message["feedback"] = "helpful"
                 st.session_state.feedback_data.append({
-                    "message_index": message_index,
+                    "message_index": i,
                     "feedback": "helpful",
                     "timestamp": datetime.now().isoformat()
                 })
                 st.rerun()
             
             # Thumbs down button
-            if cols[1].button("👎", key=f"thumbs_down_{message_index}"):
+            if cols[1].button("👎", key=f"thumbs_down_{i}"):
                 message["feedback"] = "not_helpful"
                 st.session_state.feedback_data.append({
-                    "message_index": message_index,
+                    "message_index": i,
                     "feedback": "not_helpful",
                     "timestamp": datetime.now().isoformat()
                 })
